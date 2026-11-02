@@ -27,6 +27,18 @@ jobs:
           fi
           xcodebuild -version
 
+      - name: Allow expired fake provisioning profiles
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path("build-system/bazel-rules/rules_apple/tools/plisttool/plisttool.py")
+          text = path.read_text()
+          needle = "if expire and expire < datetime.datetime.now():"
+          if needle not in text:
+              raise SystemExit("expiry check not found")
+          path.write_text(text.replace(needle, "if False and expire and expire < datetime.datetime.now():"))
+          PY
+
       - name: Create canonical source directory
         run: |
           set -x
