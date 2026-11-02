@@ -104,3 +104,4 @@ jobs:
             Unsigned build of Telegram for iOS ${{ env.APP_VERSION }} (${{ env.BUILD_NUMBER }})
 
             Sign the IPA with your own certificate before installing it.
+# CI trigger reindex
