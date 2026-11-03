@@ -80,14 +80,15 @@ jobs:
           OUTPUT_PATH="$GITHUB_WORKSPACE/build/artifacts"
           rm -rf "$OUTPUT_PATH"
           mkdir -p "$OUTPUT_PATH"
-          for f in bazel-out/applebin_ios-ios_arm*-opt-ST-*/bin/Telegram/*.ipa; do
-            cp "$f" "$OUTPUT_PATH/AyuGram.ipa"
-          done
+          IPA_PATH="$(find bazel-bin/Telegram -maxdepth 1 -name '*.ipa' -print -quit)"
+          if [ -z "$IPA_PATH" ]; then
+            echo "Built IPA not found"
+            exit 1
+          fi
+          cp "$IPA_PATH" "$OUTPUT_PATH/AyuGram.ipa"
 
           mkdir -p "$GITHUB_WORKSPACE/build/DSYMs"
-          for f in bazel-out/applebin_ios-ios_arm*-opt-ST-*/bin/Telegram/*.dSYM; do
-            cp -R "$f" "$GITHUB_WORKSPACE/build/DSYMs/"
-          done
+          find bazel-bin/Telegram -maxdepth 1 -name '*.dSYM' -exec cp -R {} "$GITHUB_WORKSPACE/build/DSYMs/" \;
           cd "$GITHUB_WORKSPACE"
           zip -r "build/artifacts/AyuGram.DSYMs.zip" build/DSYMs 1>/dev/null
 
