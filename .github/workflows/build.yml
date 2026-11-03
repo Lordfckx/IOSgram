@@ -1,4 +1,4 @@
-name: CI
+﻿name: CI
 
 on:
   workflow_dispatch:
@@ -80,8 +80,8 @@ jobs:
           OUTPUT_PATH="$GITHUB_WORKSPACE/build/artifacts"
           rm -rf "$OUTPUT_PATH"
           mkdir -p "$OUTPUT_PATH"
-          for f in bazel-out/applebin_ios-ios_arm*-opt-ST-*/bin/Telegram/Telegram.ipa; do
-            cp "$f" "$OUTPUT_PATH/"
+          for f in bazel-out/applebin_ios-ios_arm*-opt-ST-*/bin/Telegram/*.ipa; do
+            cp "$f" "$OUTPUT_PATH/AyuGram.ipa"
           done
 
           mkdir -p "$GITHUB_WORKSPACE/build/DSYMs"
@@ -89,20 +89,20 @@ jobs:
             cp -R "$f" "$GITHUB_WORKSPACE/build/DSYMs/"
           done
           cd "$GITHUB_WORKSPACE"
-          zip -r "build/artifacts/Telegram.DSYMs.zip" build/DSYMs 1>/dev/null
+          zip -r "build/artifacts/AyuGram.DSYMs.zip" build/DSYMs 1>/dev/null
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: Telegram-ipa
-          path: build/artifacts/Telegram.ipa
+          name: AyuGram-ipa
+          path: build/artifacts/AyuGram.ipa
           if-no-files-found: error
 
       - name: Upload dSYMs
         uses: actions/upload-artifact@v4
         with:
-          name: Telegram-dSYMs
-          path: build/artifacts/Telegram.DSYMs.zip
+          name: AyuGram-dSYMs
+          path: build/artifacts/AyuGram.DSYMs.zip
           if-no-files-found: ignore
 
       - name: Create Release
@@ -110,10 +110,11 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            build/artifacts/Telegram.ipa
-            build/artifacts/Telegram.DSYMs.zip
+            build/artifacts/AyuGram.ipa
+            build/artifacts/AyuGram.DSYMs.zip
           body: |
             Unsigned build of Telegram for iOS ${{ env.APP_VERSION }} (${{ env.BUILD_NUMBER }})
 
             Sign the IPA with your own certificate before installing it.
 # CI trigger reindex
+
